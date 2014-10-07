@@ -2,6 +2,7 @@ package org.unbiquitous.games.uSect.environment;
 
 import org.unbiquitous.games.uSect.environment.Environment.Stats;
 import org.unbiquitous.games.uSect.objects.Sect;
+import org.unbiquitous.games.uSect.objects.Something;
 import org.unbiquitous.uImpala.engine.core.GameSingletons;
 import org.unbiquitous.uImpala.engine.core.GameSettings;
 import org.unbiquitous.uImpala.engine.io.Screen;
@@ -20,8 +21,13 @@ class MovementManager {
 	}
 
 	public void moveTo(Sect sect, Point dir) {
-		env.moveTo(sect.id(), determineFinalPosition(sect, adjustDirection(dir)));
-		env.changeStats(sect, Stats.change().energy(-1));
+		if(sect.behavior().feeding() == Something.Feeding.AGGREGATE && env.stats(sect.id()).aggregated > 1000){
+			env.moveTo(sect.id(), dir);
+			env.changeStats(sect, Stats.change().energy(-1));
+		} else {
+			env.moveTo(sect.id(), determineFinalPosition(sect, adjustDirection(dir)));
+			env.changeStats(sect, Stats.change().energy(-1));
+		}	
 	}
 
 	private Point adjustDirection(Point dir) {
@@ -39,8 +45,7 @@ class MovementManager {
 		return newDir;
 	}
 	
-	private void addRandomRemainderToDirectionVector(Point dir, int speed,
-			Point newDir) {
+	private void addRandomRemainderToDirectionVector(Point dir, int speed, Point newDir) {
 		if(newDir.module() < speed){
 			if(Random.v() > 0.5 ){
 				newDir.x += (int) (1 * Math.signum(dir.x));

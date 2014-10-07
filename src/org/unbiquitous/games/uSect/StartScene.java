@@ -11,6 +11,7 @@ import org.unbiquitous.games.uSect.environment.Random;
 import org.unbiquitous.games.uSect.objects.Player;
 import org.unbiquitous.games.uSect.objects.Sect;
 import org.unbiquitous.games.uSect.objects.Something.Feeding;
+import org.unbiquitous.games.uSect.objects.behavior.Aggregate;
 import org.unbiquitous.games.uSect.objects.behavior.Artificial;
 import org.unbiquitous.games.uSect.objects.behavior.Carnivore;
 import org.unbiquitous.games.uSect.objects.behavior.Herbivore;
@@ -48,8 +49,9 @@ public class StartScene extends GameObjectTreeScene {
 		GameSingletons.put(AssetManager.class,assets());
 		setUpEnvironment(settings);
 		
+		@SuppressWarnings("unused")
 		Gateway gateway = GameSingletons.get(Gateway.class);
-		gateway.addDriver(new USectDriver(settings,env));
+		//gateway.addDriver(new USectDriver(settings,env));
 	}
 
 	private void setUpEnvironment(GameSettings settings) {
@@ -63,13 +65,24 @@ public class StartScene extends GameObjectTreeScene {
 		populateHerbivores(settings, e);
 		populateCarnivores(settings, e);
 		populateArtificials(settings, e);
+		populateAggregators(settings, e);
 	}
 
 	private void populateHerbivores(GameSettings settings, Environment e) {
 		int multiplier = screen.getHeight()*screen.getWidth()/1000/100;
+		@SuppressWarnings("unused")
 		int numberOfHerbivores = (int) (Random.v()*multiplier)+5;
-		for(int i = 0 ; i < numberOfHerbivores; i++){
+		for(int i = 0 ; i < 2; i++){
 			Sect sect = new Sect(new Herbivore());
+			e.addSect(sect, randScreenPosition());
+		}
+	}
+	
+	public void populateAggregators(GameSettings settings, Environment e){
+		int numberOfAggregators = 10;
+		
+		for(int i = 0; i < numberOfAggregators; i++){
+			Sect sect = new Sect(new Aggregate());
 			e.addSect(sect, randScreenPosition());
 		}
 	}

@@ -7,7 +7,7 @@ import org.unbiquitous.uImpala.util.math.Point;
 
 public class Something {
 	public enum Type {NUTRIENT, SECT, CORPSE}
-	public enum Feeding{NONE, HERBIVORE, CARNIVORE}
+	public enum Feeding{NONE, HERBIVORE, CARNIVORE, AGGREGATE}
 	
 	private UUID id; 
 	private Type type;

@@ -127,6 +127,6 @@ public class SetUpGameTest {
 		Gateway gateway = mock(Gateway.class);
 		GameSingletons.put(Gateway.class, gateway);
 		new StartScene();
-		verify(gateway).addDriver(any(USectDriver.class));
+	//	verify(gateway).addDriver(any(USectDriver.class));
 	}
 }

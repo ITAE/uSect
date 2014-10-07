@@ -40,6 +40,10 @@ public abstract class EnvironmentObject extends GameObject {
 		return env.stats(id).energy;
 	}
 	
+	public int aggregateValue(){
+		return env.stats(id).aggregated;
+	}
+	
 	public boolean equals(Object obj) {
 		if (obj instanceof EnvironmentObject) {
 			return ((EnvironmentObject) obj).id.equals(this.id);

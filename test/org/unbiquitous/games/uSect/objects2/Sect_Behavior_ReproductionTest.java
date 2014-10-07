@@ -1,4 +1,4 @@
-package org.unbiquitous.games.uSect.objects;
+package org.unbiquitous.games.uSect.objects2;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.unbiquitous.games.uSect.TestUtils.addSect;
@@ -14,6 +14,7 @@ import org.unbiquitous.games.uSect.environment.Environment;
 import org.unbiquitous.games.uSect.environment.Environment.Stats;
 import org.unbiquitous.games.uSect.environment.EnvironmentObject;
 import org.unbiquitous.games.uSect.environment.Random;
+import org.unbiquitous.games.uSect.objects.Sect;
 import org.unbiquitous.games.uSect.objects.Something.Feeding;
 import org.unbiquitous.games.uSect.objects.behavior.Carnivore;
 import org.unbiquitous.games.uSect.objects.behavior.Herbivore;

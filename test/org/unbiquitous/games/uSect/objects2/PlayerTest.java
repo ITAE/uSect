@@ -1,4 +1,4 @@
-package org.unbiquitous.games.uSect.objects;
+package org.unbiquitous.games.uSect.objects2;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Matchers.eq;
@@ -13,6 +13,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.unbiquitous.games.uSect.environment.Environment;
+import org.unbiquitous.games.uSect.objects.Player;
+import org.unbiquitous.games.uSect.objects.Sect;
 import org.unbiquitous.json.JSONObject;
 import org.unbiquitous.uImpala.engine.core.GameSingletons;
 import org.unbiquitous.uImpala.engine.core.GameSettings;

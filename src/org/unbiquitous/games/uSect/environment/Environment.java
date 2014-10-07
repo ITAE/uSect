@@ -16,6 +16,7 @@ import org.unbiquitous.games.uSect.objects.Nutrient;
 import org.unbiquitous.games.uSect.objects.Player;
 import org.unbiquitous.games.uSect.objects.Sect;
 import org.unbiquitous.uImpala.engine.asset.AssetManager;
+import org.unbiquitous.uImpala.engine.asset.SimetricShape;
 import org.unbiquitous.uImpala.engine.asset.Rectangle;
 import org.unbiquitous.uImpala.engine.core.GameSingletons;
 import org.unbiquitous.uImpala.engine.core.GameObject;
@@ -33,6 +34,7 @@ import org.unbiquitous.uImpala.util.observer.Subject;
 public class Environment extends GameObject {
 	private Screen screen;
 	private Rectangle background;
+	private SimetricShape aggregateCenter;
 
 	private Map<UUID, Stats> dataMap = new HashMap<UUID, Stats>();
 	private NutrientManager nutrients;
@@ -43,6 +45,7 @@ public class Environment extends GameObject {
 	private MovementManager mover;
 	private AttackManager attack;
 	private MatingManager mate;
+	private AggregateManager aggregate;
 	private Set<Sect> busyThisTurn = new HashSet<Sect>();
 	private Set<Sect> frozenThisTurn = new HashSet<Sect>();
 	private Set<EnvironmentObject> toRemove = new HashSet<EnvironmentObject>();
@@ -67,14 +70,16 @@ public class Environment extends GameObject {
 		mover = new MovementManager(this);
 		attack = new AttackManager(this);
 		mate = new MatingManager(this);
+		aggregate = new AggregateManager(this);
 	}
 
 	private void createBackground() {
 		screen = GameSingletons.get(Screen.class);
 		AssetManager assets = GameSingletons.get(AssetManager.class);
 		Point center = new Point(screen.getWidth() / 2, screen.getHeight() / 2);
-		background = assets.newRectangle(center, Color.WHITE,
-				screen.getWidth(), screen.getHeight());
+	
+		background = assets.newRectangle(center, Color.WHITE, screen.getWidth(), screen.getHeight());
+		aggregateCenter = assets.newCircle(new Point(100, 100), new Color(45,27,63,55), 200);
 	}
 
 	private GameSettings setUpProperties() {
@@ -82,6 +87,7 @@ public class Environment extends GameObject {
 		initialEnergy = settings.getInt("usect.initial.energy", 30 * 60 * 10);
 		nutrientEnergy = settings.getInt("usect.nutrient.energy", 30 * 60);
 		corpseEnergy = settings.getInt("usect.corpse.energy", 5 * 30 * 60);
+		
 		return settings;
 	}
 	
@@ -104,6 +110,7 @@ public class Environment extends GameObject {
 		}
 		attack.update();
 		mate.update();
+		aggregate.update();
 		for (EnvironemtObjectManager mng : managers) {
 			mng.removeAll(toRemove);
 		}
@@ -134,6 +141,7 @@ public class Environment extends GameObject {
 		stats.energy += diff.energy;
 		stats.attackCoolDown += diff.attackCoolDown;
 		stats.busyCoolDown += diff.busyCoolDown;
+		stats.aggregated += diff.aggregated;
 		return stats;
 	}
 
@@ -149,6 +157,11 @@ public class Environment extends GameObject {
 
 	public void mate(Sect sect) {
 		mate.add(sect);
+	}
+	
+	public void aggregate(Sect sect) {
+		//if(sect.)
+			aggregate.add(sect);
 	}
 
 	public void markAsBusy(Sect s) {
@@ -243,6 +256,7 @@ public class Environment extends GameObject {
 
 	protected void render(GameRenderers renderers) {
 		background.render();
+		aggregateCenter.render();
 		renderNutrients();
 		renderSects();
 		for (Player p : players.players()) {
@@ -279,6 +293,7 @@ public class Environment extends GameObject {
 	public static class Stats implements Serializable, Cloneable {
 		public Point position;
 		public long energy;
+		public int aggregated = 0;
 		public int attackCoolDown = 0;
 		public int busyCoolDown;
 
@@ -287,15 +302,16 @@ public class Environment extends GameObject {
 		}
 
 		public Stats(Point position, long energy) {
-			this(position, energy, 0, 0);
+			this(position, energy, 0, 0, 0);
 		}
 
 		private Stats(Point position, long energy, int attackCoolDown,
-				int busyCoolDown) {
+				int busyCoolDown, int aggregated) {
 			this.position = position;
 			this.energy = energy;
 			this.attackCoolDown = attackCoolDown;
 			this.busyCoolDown = busyCoolDown;
+			this.aggregated = aggregated;
 		}
 
 		public Stats clone() {
@@ -312,6 +328,11 @@ public class Environment extends GameObject {
 
 		public Stats energy(long energy) {
 			this.energy = energy;
+			return this;
+		}
+		
+		public Stats aggregated(){
+			this.aggregated++;
 			return this;
 		}
 

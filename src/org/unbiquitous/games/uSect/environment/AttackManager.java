@@ -12,6 +12,8 @@ public class AttackManager {
 	private Set<Sect> busyAttackers = new HashSet<Sect>();
 	private Environment env;
 	private int attackEnergy,attackCooldown;
+	GameSettings settings = new GameSettings();
+	
 	
 	public AttackManager(Environment env) {
 		this.env = env;
@@ -41,13 +43,14 @@ public class AttackManager {
 	}
 
 	private void checkAttack(Sect attacker, Sect deffendant) {
-		if (attacker.id() != deffendant.id() 
+		if (attacker.id() != deffendant.id()
 				&& attacker.position().distanceTo(deffendant.position()) <= attacker.influenceRadius()
-				&& env.stats(attacker.id()).attackCoolDown <= 0){
-			busyAttackers.add(attacker);
-			env.changeStats(deffendant, Environment.Stats.change().energy(-attackEnergy));
-			env.changeStats(attacker, Environment.Stats.change().attackCoolDown(attackCooldown));
-		}
+				&& env.stats(attacker.id()).attackCoolDown <= 0)
+				{
+					busyAttackers.add(attacker);
+					env.changeStats(deffendant, Environment.Stats.change().energy(-attackEnergy));
+					env.changeStats(attacker, Environment.Stats.change().attackCoolDown(attackCooldown));
+				}
 	}
 
 	private void updateAttackCoolDown() {

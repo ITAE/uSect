@@ -13,6 +13,7 @@ import org.unbiquitous.games.uSect.objects.Something.Feeding;
 import org.unbiquitous.games.uSect.objects.behavior.Artificial;
 import org.unbiquitous.games.uSect.objects.behavior.Carnivore;
 import org.unbiquitous.games.uSect.objects.behavior.Herbivore;
+import org.unbiquitous.games.uSect.objects.behavior.Aggregate;
 import org.unbiquitous.json.JSONException;
 import org.unbiquitous.json.JSONObject;
 import org.unbiquitous.uImpala.engine.asset.AssetManager;
@@ -26,6 +27,8 @@ import org.unbiquitous.uImpala.util.math.Point;
 
 public class Sect extends EnvironmentObject {
 	private static final Color HERBIVORE_COLOR = new Color(41, 128, 185,200);
+	
+	private static final Color AGGREGATE_COLOR = new Color(50, 50, 50, 50);
 
 	private static final Color CARNIVOROUS_COLOR = new Color(211, 84, 0,200);
 
@@ -39,6 +42,7 @@ public class Sect extends EnvironmentObject {
 	private SimetricShape shape;
 	private SimetricShape influence;
 	private SimetricShape mating;
+	private SimetricShape aggregate;
 	protected Text text;
 	private int influenceRadius = 50;
 
@@ -68,6 +72,9 @@ public class Sect extends EnvironmentObject {
 		}
 		if(behavior instanceof Carnivore){
 			shape = assets.newSimetricShape(new Point(), CARNIVOROUS_COLOR, radius,3);
+		} else if(behavior instanceof Aggregate){
+			shape = assets.newSimetricShape(new Point(), AGGREGATE_COLOR, radius, 21);
+		
 		}else if(behavior instanceof Artificial){
 			Color color = CARNIVOROUS_COLOR;
 			if(behavior.feeding().equals(Feeding.HERBIVORE)){
@@ -121,6 +128,11 @@ public class Sect extends EnvironmentObject {
 		env.mate(this);
 	}
 	
+	public void aggregate(){
+		
+		env.aggregate(this);
+	}
+	
 	public Point positionOf(UUID id){
 		return env.stats(id).position;
 	}
@@ -137,7 +149,11 @@ public class Sect extends EnvironmentObject {
 			mating.center(position());
 			mating.render();
 		}
-		
+		/*if(env.stats(id()).aggregated > 0){
+			aggregate.radius(influenceRadius*env.stats(id()).aggregated+1);
+			aggregate.center(position());
+			aggregate.render();
+		}*/
 		shape.center(position());
 		shape.radius(radius+(int)((Random.v()*6)-3));
 		shape.rotate(rotationAngle());
@@ -178,6 +194,8 @@ public class Sect extends EnvironmentObject {
 		Behavior behavior;
 		if("Carnivore".equalsIgnoreCase(json.optString("behavior"))){
 			behavior = new Carnivore();
+		}else if("Aggregate".equalsIgnoreCase(json.optString("behavior"))){
+			behavior = new Aggregate();			
 		}else if("Artificial".equalsIgnoreCase(json.optString("behavior"))){
 			behavior = deserializeArtificialBehavior(json);
 		}else{
