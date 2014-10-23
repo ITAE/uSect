@@ -43,7 +43,7 @@ public class LaunchActivity extends GameActivity {
 				put("output_managers", Arrays.asList(ScreenManager.class));
 				put("usect.devicestats", new DeviceStatsDalvik());
 				put("usect.player.id", UUID.randomUUID().toString());
-				put("ubiquitos.eth.tcp.ignoreFilter", "192.168.56.*");
+				//put("ubiquitos.eth.tcp.ignoreFilter", "192.168.56.*");
 			}
 		});
 	}
@@ -95,10 +95,10 @@ class DeviceStatsDalvik extends DeviceStats {
 		InputStream is = new FileInputStream(freqFile);
 		InputStreamReader ir = new InputStreamReader(is);
 		BufferedReader br = new BufferedReader(ir);
-		System.out.println("cpufreq");
+		/*System.out.println("cpufreq");
 		while(br.ready()){
 			System.out.println(br.readLine());
-		}
+		}*/
 		readInStates(br);
 		is.close();
 	}

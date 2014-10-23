@@ -4,6 +4,8 @@ import static java.lang.String.format;
 
 import java.util.UUID;
 
+import javax.swing.text.Position;
+
 import org.unbiquitous.driver.execution.executionUnity.ExecutionUnity;
 import org.unbiquitous.games.uSect.environment.Environment;
 import org.unbiquitous.games.uSect.environment.Environment.Stats;
@@ -18,11 +20,13 @@ import org.unbiquitous.json.JSONException;
 import org.unbiquitous.json.JSONObject;
 import org.unbiquitous.uImpala.engine.asset.AssetManager;
 import org.unbiquitous.uImpala.engine.asset.SimetricShape;
+import org.unbiquitous.uImpala.engine.asset.Sprite;
 import org.unbiquitous.uImpala.engine.asset.Text;
 import org.unbiquitous.uImpala.engine.core.GameSingletons;
 import org.unbiquitous.uImpala.engine.core.GameRenderers;
 import org.unbiquitous.uImpala.engine.io.Screen;
 import org.unbiquitous.uImpala.util.Color;
+import org.unbiquitous.uImpala.util.Corner;
 import org.unbiquitous.uImpala.util.math.Point;
 
 public class Sect extends EnvironmentObject {
@@ -45,6 +49,8 @@ public class Sect extends EnvironmentObject {
 	private SimetricShape aggregate;
 	protected Text text;
 	private int influenceRadius = 50;
+	
+	private Sprite sectSprite;
 
 	public interface Behavior  extends Cloneable{
 		public Something.Feeding feeding();
@@ -89,6 +95,8 @@ public class Sect extends EnvironmentObject {
 		
 		this.behavior = behavior;
 		behavior.init(this);
+		
+		sectSprite = assets.newSprite("lol.png");
 	}
 	
 	public int radius() {
@@ -154,10 +162,17 @@ public class Sect extends EnvironmentObject {
 			aggregate.center(position());
 			aggregate.render();
 		}*/
-		shape.center(position());
+		
+		/*shape.center(position());
 		shape.radius(radius+(int)((Random.v()*6)-3));
 		shape.rotate(rotationAngle());
-		shape.render();
+		shape.render();*/
+		
+		float tamanhoSect = 0.1f;
+		float multTamanho = (float) (env.stats(id()).energy)/18000.0f;
+		
+		sectSprite.render(GameSingletons.get(Screen.class), (float)position().x, (float)position().y, Corner.CENTER, 1f, 0f, tamanhoSect*multTamanho, tamanhoSect*multTamanho);
+		//System.out.println("ENERGIA: "+env.stats(id()).energy);
 		
 //		Screen screen = GameSingletons.get(Screen.class);
 //		text.setText(energy().toString());

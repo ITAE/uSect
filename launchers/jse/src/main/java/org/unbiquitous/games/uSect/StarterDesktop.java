@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.hyperic.sigar.CpuInfo;
@@ -65,7 +66,7 @@ public class StarterDesktop extends StartScene {
 				put("output_managers", Arrays.asList(ScreenManager.class));
 				put("usect.speed.value", 5);
 				put("usect.devicestats", new DeviceStatsJSE());
-//				put("usect.player.id",UUID.randomUUID().toString());
+				//put("usect.player.id",UUID.randomUUID().toString());
 			}
 		};
 		return settings;

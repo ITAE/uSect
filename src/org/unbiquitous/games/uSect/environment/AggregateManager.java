@@ -6,6 +6,7 @@ import java.util.Set;
 import org.unbiquitous.games.uSect.objects.Sect;
 import org.unbiquitous.uImpala.engine.core.GameSettings;
 import org.unbiquitous.uImpala.engine.core.GameSingletons;
+import org.unbiquitous.uImpala.engine.io.Screen;
 import org.unbiquitous.uImpala.util.math.Point;
 
 public class AggregateManager {
@@ -29,9 +30,13 @@ public class AggregateManager {
 	
 	public void update(){
 		processAggregation();
-		
+		//walk();
 	}
 	
+	//public void walk(){
+		//for(Sect aggregate : aggregating)
+			//aggregate.moveTo(new Point(env.getAggregateRec().center()));
+	//}
 	public void processAggregation(){
 		for(Sect aggregate1 : aggregating){
 			for(Sect aggregate2 : env.sects()){
@@ -47,10 +52,9 @@ public class AggregateManager {
 			env.changeStats(aggregate2, Environment.Stats.change().aggregated());
 			if(aggregate1.behavior().feeding().equals(aggregate2.behavior().feeding()) 
 					&& aggregate1.position().distanceTo(aggregate2.position()) <= aggregate1.influenceRadius() ){
-				//aggregate1.moveTo(aggregate2.position());
-				aggregate1.moveTo(aggregate2.position());
-			//	aggregate2.moveTo(aggregate1.position());
-				System.out.println("x: " + aggregate1.position().x + " y:" +aggregate1.position().y);
+				
+				//aggregate2.moveTo(aggregate1.position());
+				//System.out.println("x: " + aggregate1.position().x + " y:" +aggregate1.position().y);
 			}
 		}
 	}

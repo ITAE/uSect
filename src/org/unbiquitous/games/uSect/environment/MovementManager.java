@@ -21,9 +21,8 @@ class MovementManager {
 	}
 
 	public void moveTo(Sect sect, Point dir) {
-		if(sect.behavior().feeding() == Something.Feeding.AGGREGATE && env.stats(sect.id()).aggregated > 1000){
-			env.moveTo(sect.id(), dir);
-			env.changeStats(sect, Stats.change().energy(-1));
+		if(sect.behavior().feeding() == Something.Feeding.AGGREGATE && (sect.position().x == dir.x && sect.position().y == dir.y)){
+			sect.setFrozen(true);
 		} else {
 			env.moveTo(sect.id(), determineFinalPosition(sect, adjustDirection(dir)));
 			env.changeStats(sect, Stats.change().energy(-1));

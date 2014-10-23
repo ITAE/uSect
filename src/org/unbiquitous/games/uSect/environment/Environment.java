@@ -34,7 +34,6 @@ import org.unbiquitous.uImpala.util.observer.Subject;
 public class Environment extends GameObject {
 	private Screen screen;
 	private Rectangle background;
-	private SimetricShape aggregateCenter;
 
 	private Map<UUID, Stats> dataMap = new HashMap<UUID, Stats>();
 	private NutrientManager nutrients;
@@ -61,7 +60,8 @@ public class Environment extends GameObject {
 			setUpPlayerEnvironment();
 		}
 	}
-
+	
+	
 	private void setUpManagers(DeviceStats deviceStats) {
 		nutrients = new NutrientManager(this, deviceStats);
 		sects = new SectManager(this);
@@ -79,7 +79,6 @@ public class Environment extends GameObject {
 		Point center = new Point(screen.getWidth() / 2, screen.getHeight() / 2);
 	
 		background = assets.newRectangle(center, Color.WHITE, screen.getWidth(), screen.getHeight());
-		aggregateCenter = assets.newCircle(new Point(100, 100), new Color(45,27,63,55), 200);
 	}
 
 	private GameSettings setUpProperties() {
@@ -256,7 +255,6 @@ public class Environment extends GameObject {
 
 	protected void render(GameRenderers renderers) {
 		background.render();
-		aggregateCenter.render();
 		renderNutrients();
 		renderSects();
 		for (Player p : players.players()) {

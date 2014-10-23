@@ -70,16 +70,15 @@ public class StartScene extends GameObjectTreeScene {
 
 	private void populateHerbivores(GameSettings settings, Environment e) {
 		int multiplier = screen.getHeight()*screen.getWidth()/1000/100;
-		@SuppressWarnings("unused")
-		int numberOfHerbivores = (int) (Random.v()*multiplier)+5;
-		for(int i = 0 ; i < 2; i++){
+		int numberOfHerbivores = (int) (Random.v()*multiplier) + 10;
+		for(int i = 0 ; i < numberOfHerbivores; i++){
 			Sect sect = new Sect(new Herbivore());
 			e.addSect(sect, randScreenPosition());
 		}
 	}
 	
 	public void populateAggregators(GameSettings settings, Environment e){
-		int numberOfAggregators = 10;
+		int numberOfAggregators = 0;
 		
 		for(int i = 0; i < numberOfAggregators; i++){
 			Sect sect = new Sect(new Aggregate());
