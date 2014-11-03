@@ -2,6 +2,8 @@ package org.unbiquitous.games.uSect.objects;
 
 import static java.lang.String.format;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.UUID;
 
 import javax.swing.text.Position;
@@ -41,6 +43,7 @@ public class Sect extends EnvironmentObject {
 	private Behavior behavior;
 	protected Point currentDir;
 	private long angle = 0;
+	private float scaleDivisor = 1.0f;
 	
 	private int radius = 30;
 	private SimetricShape shape;
@@ -78,17 +81,32 @@ public class Sect extends EnvironmentObject {
 		}
 		if(behavior instanceof Carnivore){
 			shape = assets.newSimetricShape(new Point(), CARNIVOROUS_COLOR, radius,3);
+			
+			String sectSpritePath = pickRandomSprite("img/carniv");
+			sectSprite = assets.newSprite(sectSpritePath);
+			scaleDivisor = 20000.0f;
 		} else if(behavior instanceof Aggregate){
 			shape = assets.newSimetricShape(new Point(), AGGREGATE_COLOR, radius, 21);
-		
+			
+			String sectSpritePath = pickRandomSprite("img/herb");
+			sectSprite = assets.newSprite(sectSpritePath);
+			scaleDivisor = 5000.0f;
 		}else if(behavior instanceof Artificial){
 			Color color = CARNIVOROUS_COLOR;
 			if(behavior.feeding().equals(Feeding.HERBIVORE)){
 				color = HERBIVORE_COLOR;
 			}
 			shape = assets.newSimetricShape(new Point(), color, radius,4);
+			
+			String sectSpritePath = pickRandomSprite("img/herb");
+			sectSprite = assets.newSprite(sectSpritePath);
+			scaleDivisor = 5000.0f;
 		}else{
 			shape = assets.newSimetricShape(new Point(), HERBIVORE_COLOR, radius,7);
+			
+			String sectSpritePath = pickRandomSprite("img/herb");
+			sectSprite = assets.newSprite(sectSpritePath);
+			scaleDivisor = 5000.0f;
 		}
 		influence = assets.newCircle(new Point(), ATTACK_PAINT, influenceRadius);
 		mating = assets.newSimetricShape(new Point(), ATTACK_PAINT, influenceRadius,13);
@@ -96,7 +114,7 @@ public class Sect extends EnvironmentObject {
 		this.behavior = behavior;
 		behavior.init(this);
 		
-		sectSprite = assets.newSprite("lol.png");
+		
 	}
 	
 	public int radius() {
@@ -169,7 +187,7 @@ public class Sect extends EnvironmentObject {
 		shape.render();*/
 		
 		float tamanhoSect = 0.1f;
-		float multTamanho = (float) (env.stats(id()).energy)/18000.0f;
+		float multTamanho = (float) (env.stats(id()).energy)/scaleDivisor;
 		
 		sectSprite.render(GameSingletons.get(Screen.class), (float)position().x, (float)position().y, Corner.CENTER, 1f, 0f, tamanhoSect*multTamanho, tamanhoSect*multTamanho);
 		//System.out.println("ENERGIA: "+env.stats(id()).energy);
@@ -242,4 +260,23 @@ public class Sect extends EnvironmentObject {
 			throw new RuntimeException(e);
 		}
 	};
+	
+	private String pickRandomSprite (String dirname) {
+		File f1 = new File(dirname);
+		String selectedSprite = null;
+		
+		if(f1.isDirectory()){
+			File fileList[] = f1.listFiles(new FilenameFilter() {
+			    public boolean accept(File dir, String name) {
+			        return name.toLowerCase().endsWith(".png");
+			    }
+			});
+			int multiplier = fileList.length;
+			int randomSpriteNumber = (int) (Random.v()*multiplier);
+			
+			selectedSprite = fileList[randomSpriteNumber].toString();
+		}
+				
+		return selectedSprite;
+	}
 }

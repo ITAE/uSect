@@ -30,16 +30,16 @@ public class Carnivore extends TargetFocused{
 	
 	@Override
 	public void update() {
-		if(sect.energy() < initialEnergy){
+		if(sect.energy() < 5*initialEnergy){
 			super.update();
 		}
 		Something target = target();
 		if (target != null && insideInfluenceRadius(target)){
 			if(itsMatingTime(target)){
 				sect.mate();
-				waitToMateAgain = 50;
+				waitToMateAgain = 10*50;
 			}else{
-				if(sect.energy() < initialEnergy){
+				if(sect.energy() < 5*initialEnergy){
 					sect.attack();
 				}
 			}

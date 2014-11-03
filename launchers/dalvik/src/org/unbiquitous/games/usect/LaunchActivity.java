@@ -72,7 +72,7 @@ public class LaunchActivity extends GameActivity {
 
 class DeviceStatsDalvik extends DeviceStats {
 	private Runtime runtime;
-	private long cpu;
+	private long cpu; 
 
 	public static final String TIME_IN_STATE_PATH = "/sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state";
 
