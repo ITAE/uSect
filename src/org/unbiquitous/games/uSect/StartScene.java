@@ -16,6 +16,7 @@ import org.unbiquitous.games.uSect.objects.behavior.Artificial;
 import org.unbiquitous.games.uSect.objects.behavior.Carnivore;
 import org.unbiquitous.games.uSect.objects.behavior.Herbivore;
 import org.unbiquitous.uImpala.engine.asset.AssetManager;
+import org.unbiquitous.uImpala.engine.asset.Sprite;
 import org.unbiquitous.uImpala.engine.core.GameSingletons;
 import org.unbiquitous.uImpala.engine.core.GameObjectTreeScene;
 import org.unbiquitous.uImpala.engine.core.GameSettings;
@@ -34,6 +35,7 @@ public class StartScene extends GameObjectTreeScene {
 		DeltaTime deltaTime = GameSingletons.get(DeltaTime.class);
 		deltaTime.setUPS(30);
 		
+		
 		screen = GameSingletons.get(ScreenManager.class).create();
 		GameSettings settings = GameSingletons.get(GameSettings.class);
 		
@@ -43,6 +45,7 @@ public class StartScene extends GameObjectTreeScene {
 								false, null);
 		}else{
 			screen.open();
+			
 		}
 		
 		GameSingletons.put(Screen.class, screen);
@@ -71,7 +74,7 @@ public class StartScene extends GameObjectTreeScene {
 	private void populateHerbivores(GameSettings settings, Environment e) {
 		int multiplier = screen.getHeight()*screen.getWidth()/1000/100;
 		int numberOfHerbivores = (int) (Random.v()*multiplier) + 15;
-		for(int i = 0 ; i < numberOfHerbivores; i++){
+		for(int i = 0 ; i < 20; i++){
 			Sect sect = new Sect(new Herbivore());
 			e.addSect(sect, randScreenPosition());
 		}
@@ -87,7 +90,7 @@ public class StartScene extends GameObjectTreeScene {
 	}
 	
 	private void populateCarnivores(GameSettings settings, Environment e) {
-		int numberOfCarnivores = 2;
+		int numberOfCarnivores = 4;
 		for(int i = 0 ; i < numberOfCarnivores; i++){
 			Sect sect = new Sect(new Carnivore());
 			int startEnergy = settings.getInt("usect.initial.energy",30*60*10)*4;

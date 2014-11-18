@@ -20,6 +20,7 @@ import org.unbiquitous.games.uSect.objects.behavior.Herbivore;
 import org.unbiquitous.games.uSect.objects.behavior.Aggregate;
 import org.unbiquitous.json.JSONException;
 import org.unbiquitous.json.JSONObject;
+import org.unbiquitous.uImpala.engine.asset.Animation;
 import org.unbiquitous.uImpala.engine.asset.AssetManager;
 import org.unbiquitous.uImpala.engine.asset.SimetricShape;
 import org.unbiquitous.uImpala.engine.asset.Sprite;
@@ -53,7 +54,8 @@ public class Sect extends EnvironmentObject {
 	protected Text text;
 	private int influenceRadius = 50;
 	
-	private Sprite sectSprite;
+	private Animation sectSprite;
+	private String playerName;
 
 	public interface Behavior  extends Cloneable{
 		public Something.Feeding feeding();
@@ -82,39 +84,47 @@ public class Sect extends EnvironmentObject {
 		if(behavior instanceof Carnivore){
 			shape = assets.newSimetricShape(new Point(), CARNIVOROUS_COLOR, radius,3);
 			
-			String sectSpritePath = pickRandomSprite("img/carniv");
-			sectSprite = assets.newSprite(sectSpritePath);
+			//String sectSpritePath = pickRandomSprite("img/")
+			
+			String sectSpritePath = "img/carnComeDireita.png";
+			sectSprite = assets.newAnimation(sectSpritePath, 4, 8);
 			scaleDivisor = 20000.0f;
+			
 		} else if(behavior instanceof Aggregate){
 			shape = assets.newSimetricShape(new Point(), AGGREGATE_COLOR, radius, 21);
 			
-			String sectSpritePath = pickRandomSprite("img/herb");
-			sectSprite = assets.newSprite(sectSpritePath);
+			//String sectSpritePath = pickRandomSprite("img/")
+			String sectSpritePath = "img/herbAnda.png";
+			sectSprite = assets.newAnimation(sectSpritePath, 4, 8);
 			scaleDivisor = 5000.0f;
+			
 		}else if(behavior instanceof Artificial){
 			Color color = CARNIVOROUS_COLOR;
+			String sectSpritePath = "img/carnAndaDireita.png";
 			if(behavior.feeding().equals(Feeding.HERBIVORE)){
 				color = HERBIVORE_COLOR;
+				sectSpritePath = "img/herbAnda.png";
 			}
+			
 			shape = assets.newSimetricShape(new Point(), color, radius,4);
 			
-			String sectSpritePath = pickRandomSprite("img/herb");
-			sectSprite = assets.newSprite(sectSpritePath);
+			sectSprite = assets.newAnimation(sectSpritePath, 4, 8);
 			scaleDivisor = 5000.0f;
+			
 		}else{
 			shape = assets.newSimetricShape(new Point(), HERBIVORE_COLOR, radius,7);
 			
-			String sectSpritePath = pickRandomSprite("img/herb");
-			sectSprite = assets.newSprite(sectSpritePath);
+			//String sectSpritePath = pickRandomSprite("img/");
+			String sectSpritePath = "img/herbAnda.png";
+			sectSprite = assets.newAnimation(sectSpritePath, 4, 8);
 			scaleDivisor = 5000.0f;
 		}
+		
 		influence = assets.newCircle(new Point(), ATTACK_PAINT, influenceRadius);
 		mating = assets.newSimetricShape(new Point(), ATTACK_PAINT, influenceRadius,13);
 		
 		this.behavior = behavior;
 		behavior.init(this);
-		
-		
 	}
 	
 	public int radius() {
@@ -186,11 +196,10 @@ public class Sect extends EnvironmentObject {
 		shape.rotate(rotationAngle());
 		shape.render();*/
 		
-		float tamanhoSect = 0.1f;
+		float tamanhoSect = 0.2f;
 		float multTamanho = (float) (env.stats(id()).energy)/scaleDivisor;
 		
 		sectSprite.render(GameSingletons.get(Screen.class), (float)position().x, (float)position().y, Corner.CENTER, 1f, 0f, tamanhoSect*multTamanho, tamanhoSect*multTamanho);
-		//System.out.println("ENERGIA: "+env.stats(id()).energy);
 		
 //		Screen screen = GameSingletons.get(Screen.class);
 //		text.setText(energy().toString());
@@ -208,6 +217,7 @@ public class Sect extends EnvironmentObject {
 
 	public static Sect fromJSON(Environment e, JSONObject json) {
 		return fromJSON(e, json, null);
+		
 	}
 	
 	public static Sect fromJSON(Environment e, JSONObject json, Point position) {

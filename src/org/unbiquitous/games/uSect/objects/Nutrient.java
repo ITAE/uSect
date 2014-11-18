@@ -8,10 +8,12 @@ import java.util.Set;
 import org.unbiquitous.games.uSect.environment.EnvironmentObject;
 import org.unbiquitous.games.uSect.objects.Something.Feeding;
 import org.unbiquitous.games.uSect.objects.Something.Type;
+import org.unbiquitous.uImpala.engine.asset.Animation;
 import org.unbiquitous.uImpala.engine.asset.AssetManager;
 import org.unbiquitous.uImpala.engine.asset.SimetricShape;
 import org.unbiquitous.uImpala.engine.core.GameSingletons;
 import org.unbiquitous.uImpala.engine.core.GameRenderers;
+import org.unbiquitous.uImpala.engine.io.Screen;
 import org.unbiquitous.uImpala.util.Color;
 import org.unbiquitous.uImpala.util.math.Point;
 
@@ -22,6 +24,7 @@ public class Nutrient extends EnvironmentObject{
 	
 	protected int radius = 10;
 	protected SimetricShape shape;
+	protected Animation shapeAnimated;
 	protected Something.Type type = Type.NUTRIENT;
 	
 	private Sect hasBeenConsumedBy;
@@ -29,6 +32,7 @@ public class Nutrient extends EnvironmentObject{
 	public Nutrient() {
 		AssetManager assets = GameSingletons.get(AssetManager.class);
 		shape = assets.newCircle(new Point(), Color.GREEN.darker(), radius);
+		shapeAnimated = assets.newAnimation("img/fruta.png", 4, 8);
 		targetOf = new HashSet<Sect>();
 	}
 
@@ -59,7 +63,13 @@ public class Nutrient extends EnvironmentObject{
 	}
 
 	public void render(GameRenderers renderers) {
-		shape.center(position());
-		shape.render();
+		if(type == type.NUTRIENT){
+			shapeAnimated.render(GameSingletons.get(Screen.class), (float)position().x, (float)position().y);
+		} else if (type == type.CORPSE){
+			shape.center(position());
+			shape.render();
+		}
+		
+		//shapeAnimated.render(GameSingletons.get(Screen.class), (float)position().x, (float)position().y);
 	}
 }

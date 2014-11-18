@@ -66,7 +66,7 @@ public class StarterDesktop extends StartScene {
 				put("output_managers", Arrays.asList(ScreenManager.class));
 				put("usect.speed.value", 5);
 				put("usect.devicestats", new DeviceStatsJSE());
-				//put("usect.player.id",UUID.randomUUID().toString());
+				put("usect.player.id",UUID.randomUUID().toString());
 			}
 		};
 		return settings;

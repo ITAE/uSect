@@ -37,7 +37,7 @@ public abstract class TargetFocused implements Sect.Behavior {
 			sect.moveTo(targetDirection());
 		}
 	}
-
+	
 	private boolean hasATarget() {
 		return target() != null;
 	}
@@ -74,6 +74,7 @@ public abstract class TargetFocused implements Sect.Behavior {
 		if (targetsInSight.isEmpty()) {
 			return null;
 		}
+		
 		return targetsInSight.getFirst();
 	}
 
