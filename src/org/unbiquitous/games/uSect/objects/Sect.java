@@ -43,19 +43,19 @@ public class Sect extends EnvironmentObject {
 	
 	private Behavior behavior;
 	protected Point currentDir;
-	private long angle = 0;
+//	private long angle = 0;
 	private float scaleDivisor = 1.0f;
 	
 	private int radius = 30;
-	private SimetricShape shape;
+//	private SimetricShape shape;
 	private SimetricShape influence;
 	private SimetricShape mating;
-	private SimetricShape aggregate;
+//	private SimetricShape aggregate;
 	protected Text text;
 	private int influenceRadius = 50;
 	
 	private Animation sectSprite;
-	private String playerName;
+//	private String playerName;
 
 	public interface Behavior  extends Cloneable{
 		public Something.Feeding feeding();
@@ -82,7 +82,7 @@ public class Sect extends EnvironmentObject {
 //			text = assets.newText(font, "");
 		}
 		if(behavior instanceof Carnivore){
-			shape = assets.newSimetricShape(new Point(), CARNIVOROUS_COLOR, radius,3);
+//			shape = assets.newSimetricShape(new Point(), CARNIVOROUS_COLOR, radius,3);
 			
 			//String sectSpritePath = pickRandomSprite("img/")
 			
@@ -91,7 +91,7 @@ public class Sect extends EnvironmentObject {
 			scaleDivisor = 20000.0f;
 			
 		} else if(behavior instanceof Aggregate){
-			shape = assets.newSimetricShape(new Point(), AGGREGATE_COLOR, radius, 21);
+//			shape = assets.newSimetricShape(new Point(), AGGREGATE_COLOR, radius, 21);
 			
 			//String sectSpritePath = pickRandomSprite("img/")
 			String sectSpritePath = "img/herbAnda.png";
@@ -99,20 +99,20 @@ public class Sect extends EnvironmentObject {
 			scaleDivisor = 5000.0f;
 			
 		}else if(behavior instanceof Artificial){
-			Color color = CARNIVOROUS_COLOR;
+//			Color color = CARNIVOROUS_COLOR;
 			String sectSpritePath = "img/carnAndaDireita.png";
 			if(behavior.feeding().equals(Feeding.HERBIVORE)){
-				color = HERBIVORE_COLOR;
+//				color = HERBIVORE_COLOR;
 				sectSpritePath = "img/herbAnda.png";
 			}
 			
-			shape = assets.newSimetricShape(new Point(), color, radius,4);
+//			shape = assets.newSimetricShape(new Point(), color, radius,4);
 			
 			sectSprite = assets.newAnimation(sectSpritePath, 4, 8);
 			scaleDivisor = 5000.0f;
 			
 		}else{
-			shape = assets.newSimetricShape(new Point(), HERBIVORE_COLOR, radius,7);
+//			shape = assets.newSimetricShape(new Point(), HERBIVORE_COLOR, radius,7);
 			
 			//String sectSpritePath = pickRandomSprite("img/");
 			String sectSpritePath = "img/herbAnda.png";
@@ -206,10 +206,10 @@ public class Sect extends EnvironmentObject {
 //		text.render(screen, (float)position().x, (float)position().y, Corner.TOP_LEFT, 1f, 0f, 1f, 1f, new org.unbiquitous.uImpala.util.Color(0, 0, 0));
 	}
 
-	private float rotationAngle() {
-		angle += ((Random.v()*3)-2)*45;
-		return angle %= 360;
-	}
+//	private float rotationAngle() {
+//		angle += ((Random.v()*3)-2)*45;
+//		return angle %= 360;
+//	}
 	
 	public String toString() {
 		return format("Sect:%s@%s[e=%s]",behavior.feeding(), position(),energy());
@@ -271,7 +271,7 @@ public class Sect extends EnvironmentObject {
 		}
 	};
 	
-	private String pickRandomSprite (String dirname) {
+	/*private String pickRandomSprite (String dirname) {
 		File f1 = new File(dirname);
 		String selectedSprite = null;
 		
@@ -288,5 +288,5 @@ public class Sect extends EnvironmentObject {
 		}
 				
 		return selectedSprite;
-	}
+	}*/
 }

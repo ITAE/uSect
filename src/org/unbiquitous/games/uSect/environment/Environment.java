@@ -1,10 +1,12 @@
 package org.unbiquitous.games.uSect.environment;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,9 +17,11 @@ import org.unbiquitous.games.uSect.objects.Corpse;
 import org.unbiquitous.games.uSect.objects.Nutrient;
 import org.unbiquitous.games.uSect.objects.Player;
 import org.unbiquitous.games.uSect.objects.Sect;
+import org.unbiquitous.uImpala.engine.asset.Animation;
 import org.unbiquitous.uImpala.engine.asset.AssetManager;
 import org.unbiquitous.uImpala.engine.asset.SimetricShape;
 import org.unbiquitous.uImpala.engine.asset.Rectangle;
+import org.unbiquitous.uImpala.engine.asset.Sprite;
 import org.unbiquitous.uImpala.engine.core.GameSingletons;
 import org.unbiquitous.uImpala.engine.core.GameObject;
 import org.unbiquitous.uImpala.engine.core.GameRenderers;
@@ -26,6 +30,7 @@ import org.unbiquitous.uImpala.engine.io.MouseManager;
 import org.unbiquitous.uImpala.engine.io.MouseSource;
 import org.unbiquitous.uImpala.engine.io.Screen;
 import org.unbiquitous.uImpala.util.Color;
+import org.unbiquitous.uImpala.util.Corner;
 import org.unbiquitous.uImpala.util.math.Point;
 import org.unbiquitous.uImpala.util.observer.Event;
 import org.unbiquitous.uImpala.util.observer.Observation;
@@ -33,8 +38,12 @@ import org.unbiquitous.uImpala.util.observer.Subject;
 
 public class Environment extends GameObject {
 	private Screen screen;
-	private Rectangle background;
-
+	//private Rectangle background;
+	private Sprite bg0;
+	private Animation bg1, bg2;
+	private List<Integer> bgImages;
+	private int bgRows, bgColumns;
+	
 	private Map<UUID, Stats> dataMap = new HashMap<UUID, Stats>();
 	private NutrientManager nutrients;
 	private SectManager sects;
@@ -76,9 +85,62 @@ public class Environment extends GameObject {
 	private void createBackground() {
 		screen = GameSingletons.get(Screen.class);
 		AssetManager assets = GameSingletons.get(AssetManager.class);
-		Point center = new Point(screen.getWidth() / 2, screen.getHeight() / 2);
+		//Point center = new Point(screen.getWidth() / 2, screen.getHeight() / 2);
 	
-		background = assets.newRectangle(center, Color.WHITE, screen.getWidth(), screen.getHeight());
+		//background = assets.newRectangle(center, Color.WHITE, screen.getWidth(), screen.getHeight());
+		bg0 = assets.newSprite("img/chaoEstatico.png");
+		bg1 = assets.newAnimation("img/chaoAnimado1.png", 4, 3);
+		bg2 = assets.newAnimation("img/chaoAnimado2.png", 4, 3);
+		
+		bgImages = new ArrayList<Integer>();
+		
+		int screenWidth		= screen.getWidth();
+		int screenHeight	= screen.getHeight();
+		int bgWidth			= bg0.getWidth();
+		int bgHeight		= bg0.getHeight();
+		
+		bgRows				= screenHeight/bgHeight + 1;
+		bgColumns			= screenWidth/bgWidth + 1;
+		
+		int randomBgNumber	= 0;
+		
+		for (int i = 0; i < bgRows; ++i) {
+			for (int j = 0; j < bgColumns; ++j) {
+				randomBgNumber = (int) (Random.v()*6);
+				bgImages.add(randomBgNumber);
+			}
+		}
+		
+	}
+	
+	private void renderBackground() {
+		int screenWidth		= screen.getWidth();
+		int screenHeight	= screen.getHeight();
+		int bgWidth			= bg0.getWidth();
+		int bgHeight		= bg0.getHeight();
+		
+		int bgRows			= screenHeight/bgHeight + 1;
+		int bgColumns		= screenWidth/bgWidth + 1;
+		
+		int randomBgNumber	= 0;
+		
+		Iterator<Integer> myListIterator = bgImages.iterator();
+		
+		for (int i = 0; i < bgRows; ++i) {
+			for (int j = 0; j < bgColumns; ++j) {				
+				randomBgNumber = myListIterator.next();
+				
+				if (3 == randomBgNumber)
+					bg2.render(screen, j*bgWidth, i*bgHeight, Corner.TOP_LEFT);
+				else if (2 == randomBgNumber)
+					bg1.render(screen, j*bgWidth, i*bgHeight, Corner.TOP_LEFT);
+				else
+					bg0.render(screen, j*bgWidth, i*bgHeight, Corner.TOP_LEFT);
+			}
+		}
+		
+		
+		
 	}
 
 	private GameSettings setUpProperties() {
@@ -254,7 +316,8 @@ public class Environment extends GameObject {
 	}
 
 	protected void render(GameRenderers renderers) {
-		background.render();
+		//background.render();
+		renderBackground();
 		renderNutrients();
 		renderSects();
 		for (Player p : players.players()) {
