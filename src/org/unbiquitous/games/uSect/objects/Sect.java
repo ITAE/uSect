@@ -33,13 +33,20 @@ import org.unbiquitous.uImpala.util.Corner;
 import org.unbiquitous.uImpala.util.math.Point;
 
 public class Sect extends EnvironmentObject {
-	private static final Color HERBIVORE_COLOR = new Color(41, 128, 185,200);
-	
-	private static final Color AGGREGATE_COLOR = new Color(50, 50, 50, 50);
-
-	private static final Color CARNIVOROUS_COLOR = new Color(211, 84, 0,200);
-
+//	private static final Color HERBIVORE_COLOR = new Color(41, 128, 185,200);
+//	private static final Color AGGREGATE_COLOR = new Color(50, 50, 50, 50);
+//	private static final Color CARNIVOROUS_COLOR = new Color(211, 84, 0,200);
 	private static final Color ATTACK_PAINT = new Color(192, 57, 43,128);
+	
+	private static final String HERBIVORE_IDLE_SPRITE	= "img/herbIdle.png";
+	private static final String HERBIVORE_DAMAGE_SPRITE	= "img/herbDano.png";
+	private static final String HERBIVORE_EAT_SPRITE	= "img/herbCome.png";
+	private static final String HERBIVORE_WALK_SPRITE	= "img/herbAnda.png";
+	
+	private static final String CARNIVORE_WALKL_SPRITE 	= "img/carnAndaEsquerda.png";
+	private static final String CARNIVORE_WALKR_SPRITE 	= "img/carnAndaDireita.png";
+	private static final String CARNIVORE_EATL_SPRITE 	= "img/carnComeEsquerda.png";
+	private static final String CARNIVORE_EATR_SPRITE 	= "img/carnComeDireita.png";
 	
 	private Behavior behavior;
 	protected Point currentDir;
@@ -54,7 +61,7 @@ public class Sect extends EnvironmentObject {
 	protected Text text;
 	private int influenceRadius = 50;
 	
-	private Animation sectSprite;
+	private Animation sectSprite, sectAttackSprite;
 //	private String playerName;
 
 	public interface Behavior  extends Cloneable{
@@ -81,42 +88,36 @@ public class Sect extends EnvironmentObject {
 		if(assets != null){
 //			text = assets.newText(font, "");
 		}
+		
+		sectAttackSprite = assets.newAnimation(CARNIVORE_EATR_SPRITE, 4, 8);
+		
 		if(behavior instanceof Carnivore){
-//			shape = assets.newSimetricShape(new Point(), CARNIVOROUS_COLOR, radius,3);
-			
-			//String sectSpritePath = pickRandomSprite("img/")
-			
-			String sectSpritePath = "img/carnComeDireita.png";
-			sectSprite = assets.newAnimation(sectSpritePath, 4, 8);
+//			shape = assets.newSimetricShape(new Point(), CARNIVOROUS_COLOR, radius,3);			
+			sectSprite = assets.newAnimation(CARNIVORE_WALKR_SPRITE, 4, 8);
 			scaleDivisor = 20000.0f;
 			
 		} else if(behavior instanceof Aggregate){
 //			shape = assets.newSimetricShape(new Point(), AGGREGATE_COLOR, radius, 21);
-			
-			//String sectSpritePath = pickRandomSprite("img/")
-			String sectSpritePath = "img/herbAnda.png";
-			sectSprite = assets.newAnimation(sectSpritePath, 4, 8);
+			sectSprite = assets.newAnimation(HERBIVORE_WALK_SPRITE, 4, 8);
 			scaleDivisor = 5000.0f;
 			
 		}else if(behavior instanceof Artificial){
 //			Color color = CARNIVOROUS_COLOR;
-			String sectSpritePath = "img/carnAndaDireita.png";
+			
 			if(behavior.feeding().equals(Feeding.HERBIVORE)){
 //				color = HERBIVORE_COLOR;
-				sectSpritePath = "img/herbAnda.png";
+				sectSprite = assets.newAnimation(HERBIVORE_WALK_SPRITE, 4, 8);
+			}else{
+				sectSprite = assets.newAnimation(CARNIVORE_WALKR_SPRITE, 4, 8);
 			}
 			
 //			shape = assets.newSimetricShape(new Point(), color, radius,4);
 			
-			sectSprite = assets.newAnimation(sectSpritePath, 4, 8);
 			scaleDivisor = 5000.0f;
 			
 		}else{
-//			shape = assets.newSimetricShape(new Point(), HERBIVORE_COLOR, radius,7);
-			
-			//String sectSpritePath = pickRandomSprite("img/");
-			String sectSpritePath = "img/herbAnda.png";
-			sectSprite = assets.newAnimation(sectSpritePath, 4, 8);
+//			shape = assets.newSimetricShape(new Point(), HERBIVORE_COLOR, radius,7);			
+			sectSprite = assets.newAnimation(HERBIVORE_WALK_SPRITE, 4, 8);
 			scaleDivisor = 5000.0f;
 		}
 		
@@ -174,10 +175,19 @@ public class Sect extends EnvironmentObject {
 	}
 	
 	public void render(GameRenderers renderers) {
+		float tamanhoSect = 0.2f;
+		float multTamanho = (float) (env.stats(id()).energy)/scaleDivisor;
+		
+		
 		if(env.stats(id()).attackCoolDown > 0){
-			influence.radius(influenceRadius*env.stats(id()).attackCoolDown/5);
-			influence.center(position());
-			influence.render();
+//			influence.radius(influenceRadius*env.stats(id()).attackCoolDown/5);
+//			influence.center(position());
+//			influence.render();
+			
+			sectAttackSprite.render(GameSingletons.get(Screen.class), (float)position().x, (float)position().y, Corner.CENTER, 1f, 0f, 1f,1f);//tamanhoSect*multTamanho, tamanhoSect*multTamanho);
+			
+		}else{
+			sectSprite.render(GameSingletons.get(Screen.class), (float)position().x, (float)position().y, Corner.CENTER, 1f, 0f, 1f,1f);//tamanhoSect*multTamanho, tamanhoSect*multTamanho);
 		}
 		
 		if(env.stats(id()).busyCoolDown > 0){
@@ -185,6 +195,7 @@ public class Sect extends EnvironmentObject {
 			mating.center(position());
 			mating.render();
 		}
+		
 		/*if(env.stats(id()).aggregated > 0){
 			aggregate.radius(influenceRadius*env.stats(id()).aggregated+1);
 			aggregate.center(position());
@@ -196,10 +207,9 @@ public class Sect extends EnvironmentObject {
 		shape.rotate(rotationAngle());
 		shape.render();*/
 		
-		float tamanhoSect = 0.2f;
-		float multTamanho = (float) (env.stats(id()).energy)/scaleDivisor;
 		
-		sectSprite.render(GameSingletons.get(Screen.class), (float)position().x, (float)position().y, Corner.CENTER, 1f, 0f, tamanhoSect*multTamanho, tamanhoSect*multTamanho);
+		
+		
 		
 //		Screen screen = GameSingletons.get(Screen.class);
 //		text.setText(energy().toString());

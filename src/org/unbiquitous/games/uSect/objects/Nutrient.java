@@ -32,7 +32,7 @@ public class Nutrient extends EnvironmentObject{
 	public Nutrient() {
 		AssetManager assets = GameSingletons.get(AssetManager.class);
 		shape = assets.newCircle(new Point(), Color.GREEN.darker(), radius);
-		shapeAnimated = assets.newAnimation("img/fruta.png", 4, 8);
+		shapeAnimated = assets.newAnimation("img/fruta.png", 4, 2);
 		targetOf = new HashSet<Sect>();
 	}
 
