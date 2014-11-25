@@ -48,22 +48,24 @@ public class Sect extends EnvironmentObject {
 	private static final String CARNIVORE_EATL_SPRITE 	= "img/carnComeEsquerda.png";
 	private static final String CARNIVORE_EATR_SPRITE 	= "img/carnComeDireita.png";
 	
+	private static final float HERBIVORE_SCALE_DIVISOR	= 20000.0f;
+	private static final float CARNIVORE_SCALE_DIVISOR	= 90000.0f;
+	
+	private static final float MAX_SIZE	= 1.5f;
+	private static final float MIN_SIZE	= 0.6f;
+	
+	private Animation herbivoreIdleSprite, herbivoreDamageSprite, herbivoreEatSprite, herbivoreWalkSprite;
+	private Animation carnivoreWalklSprite, carnivoreWalkrSprite, carnivoreEatlSprite, carnivoreEatrSprite;
+	
 	private Behavior behavior;
 	protected Point currentDir;
-//	private long angle = 0;
-	private float scaleDivisor = 1.0f;
 	
 	private int radius = 30;
-//	private SimetricShape shape;
 	private SimetricShape influence;
 	private SimetricShape mating;
-//	private SimetricShape aggregate;
 	protected Text text;
 	private int influenceRadius = 50;
 	
-	private Animation sectSprite, sectAttackSprite;
-//	private String playerName;
-
 	public interface Behavior  extends Cloneable{
 		public Something.Feeding feeding();
 		public void init(Sect s);
@@ -83,44 +85,18 @@ public class Sect extends EnvironmentObject {
 	
 	public Sect(Behavior behavior, UUID id) {
 		super(id);
-//		Font font = new Font("Verdana", Font.BOLD, 12);
+
 		AssetManager assets = GameSingletons.get(AssetManager.class);
-		if(assets != null){
-//			text = assets.newText(font, "");
-		}
 		
-		sectAttackSprite = assets.newAnimation(CARNIVORE_EATR_SPRITE, 4, 8);
-		
-		if(behavior instanceof Carnivore){
-//			shape = assets.newSimetricShape(new Point(), CARNIVOROUS_COLOR, radius,3);			
-			sectSprite = assets.newAnimation(CARNIVORE_WALKR_SPRITE, 4, 8);
-			scaleDivisor = 20000.0f;
-			
-		} else if(behavior instanceof Aggregate){
-//			shape = assets.newSimetricShape(new Point(), AGGREGATE_COLOR, radius, 21);
-			sectSprite = assets.newAnimation(HERBIVORE_WALK_SPRITE, 4, 8);
-			scaleDivisor = 5000.0f;
-			
-		}else if(behavior instanceof Artificial){
-//			Color color = CARNIVOROUS_COLOR;
-			
-			if(behavior.feeding().equals(Feeding.HERBIVORE)){
-//				color = HERBIVORE_COLOR;
-				sectSprite = assets.newAnimation(HERBIVORE_WALK_SPRITE, 4, 8);
-			}else{
-				sectSprite = assets.newAnimation(CARNIVORE_WALKR_SPRITE, 4, 8);
-			}
-			
-//			shape = assets.newSimetricShape(new Point(), color, radius,4);
-			
-			scaleDivisor = 5000.0f;
-			
-		}else{
-//			shape = assets.newSimetricShape(new Point(), HERBIVORE_COLOR, radius,7);			
-			sectSprite = assets.newAnimation(HERBIVORE_WALK_SPRITE, 4, 8);
-			scaleDivisor = 5000.0f;
-		}
-		
+		herbivoreIdleSprite		= assets.newAnimation(HERBIVORE_IDLE_SPRITE, 4, 8);
+		herbivoreDamageSprite	= assets.newAnimation(HERBIVORE_DAMAGE_SPRITE, 4, 8);
+		herbivoreEatSprite		= assets.newAnimation(HERBIVORE_EAT_SPRITE, 4, 8);
+		herbivoreWalkSprite		= assets.newAnimation(HERBIVORE_WALK_SPRITE, 4, 8);
+		carnivoreWalklSprite	= assets.newAnimation(CARNIVORE_WALKL_SPRITE, 4, 8);
+		carnivoreWalkrSprite	= assets.newAnimation(CARNIVORE_WALKR_SPRITE, 4, 8);
+		carnivoreEatlSprite		= assets.newAnimation(CARNIVORE_EATL_SPRITE, 4, 8);
+		carnivoreEatrSprite		= assets.newAnimation(CARNIVORE_EATR_SPRITE, 4, 8);
+
 		influence = assets.newCircle(new Point(), ATTACK_PAINT, influenceRadius);
 		mating = assets.newSimetricShape(new Point(), ATTACK_PAINT, influenceRadius,13);
 		
@@ -175,19 +151,27 @@ public class Sect extends EnvironmentObject {
 	}
 	
 	public void render(GameRenderers renderers) {
-		float tamanhoSect = 0.2f;
-		float multTamanho = (float) (env.stats(id()).energy)/scaleDivisor;
-		
-		
-		if(env.stats(id()).attackCoolDown > 0){
-//			influence.radius(influenceRadius*env.stats(id()).attackCoolDown/5);
-//			influence.center(position());
-//			influence.render();
+		if(behavior instanceof Carnivore){
+			float tamanhoSect = (float) (env.stats(id()).energy)/CARNIVORE_SCALE_DIVISOR;
 			
-			sectAttackSprite.render(GameSingletons.get(Screen.class), (float)position().x, (float)position().y, Corner.CENTER, 1f, 0f, 1f,1f);//tamanhoSect*multTamanho, tamanhoSect*multTamanho);
+			if(tamanhoSect > MAX_SIZE)
+				tamanhoSect = MAX_SIZE;
+			else if(tamanhoSect < MIN_SIZE)
+				tamanhoSect = MIN_SIZE;
 			
+			if(env.stats(id()).attackCoolDown > 0)		
+				carnivoreEatrSprite.render(GameSingletons.get(Screen.class), (float)position().x, (float)position().y, Corner.CENTER, 1f, 0f, tamanhoSect, tamanhoSect);
+			else
+				carnivoreWalkrSprite.render(GameSingletons.get(Screen.class), (float)position().x, (float)position().y, Corner.CENTER, 1f, 0f, tamanhoSect, tamanhoSect);
 		}else{
-			sectSprite.render(GameSingletons.get(Screen.class), (float)position().x, (float)position().y, Corner.CENTER, 1f, 0f, 1f,1f);//tamanhoSect*multTamanho, tamanhoSect*multTamanho);
+			float tamanhoSect = (float) (env.stats(id()).energy)/HERBIVORE_SCALE_DIVISOR;
+			
+			if(tamanhoSect > MAX_SIZE)
+				tamanhoSect = MAX_SIZE;
+			else if(tamanhoSect < MIN_SIZE)
+				tamanhoSect = MIN_SIZE;
+			
+			herbivoreWalkSprite.render(GameSingletons.get(Screen.class), (float)position().x, (float)position().y, Corner.CENTER, 1f, 0f, tamanhoSect, tamanhoSect);
 		}
 		
 		if(env.stats(id()).busyCoolDown > 0){
@@ -195,31 +179,7 @@ public class Sect extends EnvironmentObject {
 			mating.center(position());
 			mating.render();
 		}
-		
-		/*if(env.stats(id()).aggregated > 0){
-			aggregate.radius(influenceRadius*env.stats(id()).aggregated+1);
-			aggregate.center(position());
-			aggregate.render();
-		}*/
-		
-		/*shape.center(position());
-		shape.radius(radius+(int)((Random.v()*6)-3));
-		shape.rotate(rotationAngle());
-		shape.render();*/
-		
-		
-		
-		
-		
-//		Screen screen = GameSingletons.get(Screen.class);
-//		text.setText(energy().toString());
-//		text.render(screen, (float)position().x, (float)position().y, Corner.TOP_LEFT, 1f, 0f, 1f, 1f, new org.unbiquitous.uImpala.util.Color(0, 0, 0));
 	}
-
-//	private float rotationAngle() {
-//		angle += ((Random.v()*3)-2)*45;
-//		return angle %= 360;
-//	}
 	
 	public String toString() {
 		return format("Sect:%s@%s[e=%s]",behavior.feeding(), position(),energy());
@@ -280,23 +240,4 @@ public class Sect extends EnvironmentObject {
 			throw new RuntimeException(e);
 		}
 	};
-	
-	/*private String pickRandomSprite (String dirname) {
-		File f1 = new File(dirname);
-		String selectedSprite = null;
-		
-		if(f1.isDirectory()){
-			File fileList[] = f1.listFiles(new FilenameFilter() {
-			    public boolean accept(File dir, String name) {
-			        return name.toLowerCase().endsWith(".png");
-			    }
-			});
-			int multiplier = fileList.length;
-			int randomSpriteNumber = (int) (Random.v()*multiplier);
-			
-			selectedSprite = fileList[randomSpriteNumber].toString();
-		}
-				
-		return selectedSprite;
-	}*/
 }
