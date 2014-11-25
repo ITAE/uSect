@@ -48,7 +48,9 @@ public class Sect extends EnvironmentObject {
 	private static final String CARNIVORE_EATL_SPRITE 	= "img/carnComeEsquerda.png";
 	private static final String CARNIVORE_EATR_SPRITE 	= "img/carnComeDireita.png";
 	
-	private static final float HERBIVORE_SCALE_DIVISOR	= 20000.0f;
+	private static final String MATING_SPRITE			= "img/love.png";
+	
+	private static final float HERBIVORE_SCALE_DIVISOR	= 30000.0f;
 	private static final float CARNIVORE_SCALE_DIVISOR	= 90000.0f;
 	
 	private static final float MAX_SIZE	= 1.5f;
@@ -56,13 +58,13 @@ public class Sect extends EnvironmentObject {
 	
 	private Animation herbivoreIdleSprite, herbivoreDamageSprite, herbivoreEatSprite, herbivoreWalkSprite;
 	private Animation carnivoreWalklSprite, carnivoreWalkrSprite, carnivoreEatlSprite, carnivoreEatrSprite;
+	private Animation matingSprite;
 	
 	private Behavior behavior;
 	protected Point currentDir;
 	
 	private int radius = 30;
 	private SimetricShape influence;
-	private SimetricShape mating;
 	protected Text text;
 	private int influenceRadius = 50;
 	
@@ -98,8 +100,8 @@ public class Sect extends EnvironmentObject {
 		carnivoreEatrSprite		= assets.newAnimation(CARNIVORE_EATR_SPRITE, 4, 8);
 
 		influence = assets.newCircle(new Point(), ATTACK_PAINT, influenceRadius);
-		mating = assets.newSimetricShape(new Point(), ATTACK_PAINT, influenceRadius,13);
-		
+		matingSprite = assets.newAnimation(MATING_SPRITE, 8, 8);
+				
 		this.behavior = behavior;
 		behavior.init(this);
 	}
@@ -175,9 +177,7 @@ public class Sect extends EnvironmentObject {
 		}
 		
 		if(env.stats(id()).busyCoolDown > 0){
-			mating.radius(influenceRadius*env.stats(id()).busyCoolDown/50+radius);
-			mating.center(position());
-			mating.render();
+			matingSprite.render(GameSingletons.get(Screen.class), position().x, position().y);
 		}
 	}
 	
