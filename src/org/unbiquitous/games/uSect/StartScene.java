@@ -54,7 +54,8 @@ public class StartScene extends GameObjectTreeScene {
 		
 		@SuppressWarnings("unused")
 		Gateway gateway = GameSingletons.get(Gateway.class);
-		//gateway.addDriver(new USectDriver(settings,env));
+		gateway.addDriver(new USectDriver(settings,env));
+		gateway.addDriver(new PictureDriver());
 	}
 
 	private void setUpEnvironment(GameSettings settings) {

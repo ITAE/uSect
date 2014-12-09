@@ -111,6 +111,7 @@ public class PlayerManager implements EnvironemtObjectManager {
 
 	private UUID callPlayerID(UpDevice d) throws ServiceCallException {
 		Call connect = new Call("usect.driver", "connect");
+
 		Response r = gateway.callService(d, connect);
 		if(r.getResponseData() != null && r.getResponseData().containsKey("player.id")){
 			return UUID.fromString(r.getResponseString("player.id"));

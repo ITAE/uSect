@@ -306,6 +306,10 @@ public class Environment extends GameObject {
 	public List<Nutrient> nutrients() {
 		return nutrients.nutrients();
 	}
+	
+	public int getNuts(){
+		return nutrients.nutrients().size();
+	}
 
 	public List<Corpse> corpses() {
 		return nutrients.corpses();

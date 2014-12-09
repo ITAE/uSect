@@ -8,6 +8,7 @@ import org.unbiquitous.games.uSect.environment.Environment.Stats;
 import org.unbiquitous.games.uSect.objects.Sect;
 import org.unbiquitous.games.uSect.objects.Something;
 import org.unbiquitous.games.uSect.objects.Something.Type;
+import org.unbiquitous.uos.core.messageEngine.messages.Response;
 
 class SectManager implements EnvironemtObjectManager{
 	private Environment env;
@@ -62,7 +63,7 @@ class SectManager implements EnvironemtObjectManager{
 			}
 		}
 		sectsThatDiedThisTurn.clear(); //TODO: remove from other places
-		sectsAddedThisTurn.clear(); //TODO: remove from other places 
+		sectsAddedThisTurn.clear(); //TODO: remove from other places
 	}
 
 	private void updateSect(Sect s) {
